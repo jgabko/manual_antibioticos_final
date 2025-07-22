@@ -1,0 +1,4 @@
+#Tue Jul 22 02:40:20 BRT 2025
+base.0=C\:\\Users\\gamet\\Documents\\manual_antibioticos_final\\build\\app\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
