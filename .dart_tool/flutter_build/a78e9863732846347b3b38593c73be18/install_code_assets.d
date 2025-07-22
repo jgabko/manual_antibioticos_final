@@ -1,0 +1,1 @@
+ C:\\Users\\gamet\\Documents\\manual_antibioticos_final\\.dart_tool\\flutter_build\\a78e9863732846347b3b38593c73be18\\native_assets.json: 

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\gamet\Documents\manual_antibioticos_final\build\windows\x64\CMakeFiles\c20393d7834d9ee1e5c1cf1c1ff430ec\flutter_windows.dll.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\gamet\Documents\manual_antibioticos_final\build\windows\x64\CMakeFiles\8fff214c3dccdf9b510a3a9f8aa305fa\flutter_assemble.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\gamet\Documents\manual_antibioticos_final\windows\flutter\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\gamet\Documents\manual_antibioticos_final\build\windows\x64\flutter\CMakeFiles\flutter_assemble" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{95B86CB5-B967-3006-982C-90FCDC7122BF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
