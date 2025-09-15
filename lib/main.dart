@@ -27,6 +27,34 @@ class MyApp extends StatelessWidget {
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
 
+  void _showInfoModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      backgroundColor: Colors.white,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text(
+                'O uso consciente de antibióticos é um compromisso com a saúde de todos e com a proteção do nosso planeta.\n\n'
+                'Esta ferramenta foi desenvolvida para ser sua aliada na tomada de decisões clínicas rápidas e seguras , promovendo o uso racional de antimicrobianos. A prescrição correta é fundamental para a saúde pública, pois ajuda a minimizar o risco do desenvolvimento de resistência bacteriana, um dos maiores desafios da medicina moderna.\n\n'
+                'Além disso, o uso responsável de medicamentos impacta diretamente o meio ambiente. A redução de cepas multirresistentes contribui para um ecossistema mais seguro e equilibrado. Ao optar por uma ferramenta digital, você também colabora com a sustentabilidade, substituindo manuais impressos e reduzindo o consumo de recursos.\n\n'
+                'Use esta plataforma como um apoio para uma prática clínica baseada em evidências, mais eficiente e sustentável.',
+                style: TextStyle(fontSize: 16, color: Colors.deepPurple),
+                textAlign: TextAlign.justify,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width > 700;
@@ -167,6 +195,14 @@ class MainPage extends StatelessWidget {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showInfoModal(context),
+        backgroundColor: Colors.deepPurple,
+        child: const Icon(Icons.info, color: Colors.white),
+        shape: const CircleBorder(),
+        tooltip: 'Informações sobre uso consciente',
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
