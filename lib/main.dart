@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
 import 'data/database.dart';
+import 'theme/app_theme.dart';
+import 'theme/responsive_body.dart';
+
+/// Converte chaves camelCase (ex.: "doseAdulto") em rótulos legíveis ("Dose Adulto").
+String formatFieldLabel(String key) {
+  final withSpaces = key.replaceAllMapped(
+    RegExp(r'([a-z0-9])([A-Z])'),
+    (m) => '${m.group(1)} ${m.group(2)}',
+  );
+  return withSpaces[0].toUpperCase() + withSpaces.substring(1);
+}
 
 void main() {
   runApp(const MyApp());
@@ -13,12 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Manual de Antibióticos',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        fontFamily: 'Montserrat',
-        scaffoldBackgroundColor: Colors.grey[100],
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme,
       home: const MainPage(),
     );
   }
@@ -30,22 +36,27 @@ class MainPage extends StatelessWidget {
   void _showInfoModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      backgroundColor: Colors.white,
       builder: (context) => Padding(
         padding: const EdgeInsets.all(24.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.info_outline, color: AppColors.primary, size: 22),
+                  const SizedBox(width: 8),
+                  Text('Uso consciente', style: Theme.of(context).textTheme.titleMedium),
+                ],
+              ),
+              const SizedBox(height: 16),
               Text(
                 'O uso consciente de antibióticos é um compromisso com a saúde de todos e com a proteção do nosso planeta.\n\n'
-                'Esta ferramenta foi desenvolvida para ser sua aliada na tomada de decisões clínicas rápidas e seguras , promovendo o uso racional de antimicrobianos. A prescrição correta é fundamental para a saúde pública, pois ajuda a minimizar o risco do desenvolvimento de resistência bacteriana, um dos maiores desafios da medicina moderna.\n\n'
+                'Esta ferramenta foi desenvolvida para ser sua aliada na tomada de decisões clínicas rápidas e seguras, promovendo o uso racional de antimicrobianos. A prescrição correta é fundamental para a saúde pública, pois ajuda a minimizar o risco do desenvolvimento de resistência bacteriana, um dos maiores desafios da medicina moderna.\n\n'
                 'Além disso, o uso responsável de medicamentos impacta diretamente o meio ambiente. A redução de cepas multirresistentes contribui para um ecossistema mais seguro e equilibrado. Ao optar por uma ferramenta digital, você também colabora com a sustentabilidade, substituindo manuais impressos e reduzindo o consumo de recursos.\n\n'
                 'Use esta plataforma como um apoio para uma prática clínica baseada em evidências, mais eficiente e sustentável.',
-                style: TextStyle(fontSize: 16, color: Colors.deepPurple),
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.justify,
               ),
             ],
@@ -60,87 +71,74 @@ class MainPage extends StatelessWidget {
     final isDesktop = MediaQuery.of(context).size.width > 700;
     final logoSize = isDesktop
         ? MediaQuery.of(context).size.width * 0.15
-        : MediaQuery.of(context).size.width * 0.35;
+        : MediaQuery.of(context).size.width * 0.32;
     final paddingHorizontal = isDesktop ? 200.0 : 24.0;
-    final buttonPaddingHorizontal = isDesktop ? 250.0 : 32.0;
+    final buttonPaddingHorizontal = isDesktop ? 250.0 : 24.0;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        elevation: 2,
-        title: const Text(
-          'Manual de Antibióticos',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            letterSpacing: 1.2,
-          ),
-        ),
-        centerTitle: true,
+        title: const Text('Manual de Antibióticos'),
       ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: isDesktop ? 48 : MediaQuery.of(context).size.height * 0.10),
+              SizedBox(height: isDesktop ? 48 : MediaQuery.of(context).size.height * 0.08),
               Container(
                 width: logoSize,
                 height: logoSize,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(logoSize / 2),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.chipBackground, width: 2),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.deepPurple.withOpacity(0.1),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
+                      color: AppColors.primary.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 6),
                     ),
                   ],
                 ),
                 child: Center(
                   child: Icon(
-                    Icons.medical_services,
-                    color: Colors.deepPurple,
-                    size: logoSize * 0.7,
+                    Icons.medical_services_outlined,
+                    color: AppColors.primary,
+                    size: logoSize * 0.5,
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 28),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: paddingHorizontal),
                 child: Text(
-                  'Bem-vindo ao Manual de Antibióticos!',
+                  'Bem-vindo ao Manual de Antibióticos',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: isDesktop ? 22 : 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.deepPurple,
-                  ),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontSize: isDesktop ? 24 : 20,
+                      ),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 6),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: paddingHorizontal),
+                child: Text(
+                  'Consulta rápida e segura para sua prática clínica',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              const SizedBox(height: 36),
               SizedBox(
                 width: double.infinity,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: buttonPaddingHorizontal),
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      foregroundColor: Colors.white,
-                      minimumSize: Size.fromHeight(isDesktop ? 56 : 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      minimumSize: Size.fromHeight(isDesktop ? 56 : 52),
                     ),
                     icon: const Icon(Icons.search),
-                    label: Text(
-                      'Pesquisar',
-                      style: TextStyle(
-                        fontSize: isDesktop ? 20 : 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    label: const Text('Pesquisar'),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -152,28 +150,17 @@ class MainPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: buttonPaddingHorizontal),
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber,
-                      foregroundColor: Colors.deepPurple,
-                      minimumSize: Size.fromHeight(isDesktop ? 56 : 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: Size.fromHeight(isDesktop ? 56 : 52),
                     ),
-                    icon: const Icon(Icons.bookmark),
-                    label: Text(
-                      'Favoritos',
-                      style: TextStyle(
-                        fontSize: isDesktop ? 20 : 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    icon: const Icon(Icons.bookmark_outline),
+                    label: const Text('Favoritos'),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -190,17 +177,15 @@ class MainPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: isDesktop ? 48 : MediaQuery.of(context).size.height * 0.10),
+              SizedBox(height: isDesktop ? 48 : MediaQuery.of(context).size.height * 0.08),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showInfoModal(context),
-        backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.info, color: Colors.white),
-        shape: const CircleBorder(),
         tooltip: 'Informações sobre uso consciente',
+        child: const Icon(Icons.info_outline),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
@@ -284,20 +269,9 @@ class _AntibioticsSearchPageState extends State<AntibioticsSearchPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Manual de Antibióticos',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            letterSpacing: 1.2,
-          ),
-        ),
-        backgroundColor: Colors.deepPurple,
-        elevation: 2,
-        // Removed the actions with the bookmark icon
+        title: const Text('Pesquisar'),
       ),
-      body: Container(
-        color: Colors.grey[100],
+      body: ResponsiveBody(
         child: Column(
           children: [
             Padding(
@@ -309,34 +283,45 @@ class _AntibioticsSearchPageState extends State<AntibioticsSearchPage> {
                 },
                 decoration: InputDecoration(
                   labelText: 'Buscar por antibiótico, doença ou microrganismo',
-                  labelStyle: const TextStyle(fontSize: 16),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  labelStyle: const TextStyle(fontSize: 14),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: AppColors.chipBackground, width: 1.5),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: AppColors.chipBackground, width: 1.5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                  ),
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,
                 ),
               ),
             ),
-            Expanded(
-              child: ListView(
+              Expanded(
+                child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 children: [
                   if (resultadosPatologia.isNotEmpty) ...[
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        'Resultados por Patologia',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.deepPurple,
-                        ),
+                      padding: const EdgeInsets.fromLTRB(6, 8, 6, 8),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.coronavirus_outlined, size: 16, color: AppColors.primary),
+                          const SizedBox(width: 6),
+                          Text(
+                            'RESULTADOS POR PATOLOGIA',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ],
                       ),
                     ),
                     ...exibirPatologias.map((item) => Card(
-                          elevation: 2,
                           margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           child: ListTile(
                             contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                             title: Text(
@@ -375,8 +360,8 @@ class _AntibioticsSearchPageState extends State<AntibioticsSearchPage> {
                                     ? Icons.bookmark // filled icon for saved
                                     : Icons.bookmark_border, // outline icon for unsaved
                                 color: globalSalvos.any((e) => e['id'] == item['doencaPatologia'] && e['tipo'] == 'patologia')
-                                    ? Colors.amber
-                                    : Colors.grey,
+                                    ? AppColors.primary
+                                    : AppColors.textSecondary,
                               ),
                               onPressed: () {
                                 if (globalSalvos.any((e) => e['id'] == item['doencaPatologia'] && e['tipo'] == 'patologia')) {
@@ -430,8 +415,8 @@ class _AntibioticsSearchPageState extends State<AntibioticsSearchPage> {
                           child: Text(
                             mostrarTudoPatologia ? 'Mostrar menos' : 'Mostrar tudo',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
                             ),
                           ),
                         ),
@@ -439,20 +424,20 @@ class _AntibioticsSearchPageState extends State<AntibioticsSearchPage> {
                   ],
                   if (resultadosAntibiotico.isNotEmpty) ...[
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        'Resultados por Antibiótico',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.deepPurple,
-                        ),
+                      padding: const EdgeInsets.fromLTRB(6, 8, 6, 8),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.medication_outlined, size: 16, color: AppColors.primary),
+                          const SizedBox(width: 6),
+                          Text(
+                            'RESULTADOS POR ANTIBIÓTICO',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ],
                       ),
                     ),
                     ...exibirAntibioticos.map((item) => Card(
-                          elevation: 2,
                           margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           child: ListTile(
                             contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                             title: Text(
@@ -478,8 +463,8 @@ class _AntibioticsSearchPageState extends State<AntibioticsSearchPage> {
                                     ? Icons.bookmark
                                     : Icons.bookmark_border,
                                 color: globalSalvos.any((e) => e['id'] == item['nomeAntibiotico'] && e['tipo'] == 'antibiotico')
-                                    ? Colors.amber
-                                    : Colors.grey,
+                                    ? AppColors.primary
+                                    : AppColors.textSecondary,
                               ),
                               onPressed: () {
                                 if (globalSalvos.any((e) => e['id'] == item['nomeAntibiotico'] && e['tipo'] == 'antibiotico')) {
@@ -533,23 +518,28 @@ class _AntibioticsSearchPageState extends State<AntibioticsSearchPage> {
                           child: Text(
                             mostrarTudoAntibiotico ? 'Mostrar menos' : 'Mostrar tudo',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
                             ),
                           ),
                         ),
                       ),
                   ],
                   if (resultadosPatologia.isEmpty && resultadosAntibiotico.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.all(32.0),
+                    Padding(
+                      padding: const EdgeInsets.all(48.0),
                       child: Center(
-                        child: Text(
-                          'Nenhum resultado encontrado.',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
+                        child: Column(
+                          children: [
+                            Icon(Icons.search_off, size: 40, color: AppColors.textSecondary.withValues(alpha: 0.6)),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Nenhum resultado encontrado',
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -617,14 +607,74 @@ class _PatologiaDetailPageState extends State<PatologiaDetailPage> {
         child: Text(
           nome,
           style: const TextStyle(
-            color: Colors.blue,
+            color: AppColors.primary,
             decoration: TextDecoration.underline,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
       );
     }
-    return Text(nome);
+    return Text(nome, style: const TextStyle(fontWeight: FontWeight.w600));
+  }
+
+  Widget _buildKeyValueRow(BuildContext context, String label, Widget value) {
+    final displayLabel = formatFieldLabel(label);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 90,
+            child: Text(
+              displayLabel,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ),
+          Expanded(child: value),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEscolhaSection(BuildContext context, String titulo, Map<String, dynamic> escolha) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.chipBackground,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                titulo,
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                  letterSpacing: 0.6,
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+            ...escolha.entries.map((e) {
+              if (e.key == 'nome') {
+                return _buildKeyValueRow(context, e.key, _buildAntibioticoLink(context, e.value.toString()));
+              }
+              return _buildKeyValueRow(
+                context,
+                e.key,
+                Text(e.value.toString(), style: Theme.of(context).textTheme.bodyMedium),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -633,48 +683,29 @@ class _PatologiaDetailPageState extends State<PatologiaDetailPage> {
     final segunda = widget.data['segundaEscolha'] as Map<String, dynamic>;
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                widget.data['doencaPatologia'],
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            IconButton(
-              icon: Icon(
-                isItemSaved ? Icons.bookmark : Icons.bookmark_border,
-                color: isItemSaved ? Colors.amber : Colors.grey,
-              ),
-              onPressed: handleSave,
-              tooltip: isItemSaved ? 'Remover dos favoritos' : 'Salvar',
-            ),
-          ],
-        ),
-        backgroundColor: Colors.deepPurple,
+        title: Text(widget.data['doencaPatologia']),
+        actions: [
+          IconButton(
+            icon: Icon(isItemSaved ? Icons.bookmark : Icons.bookmark_border),
+            onPressed: handleSave,
+            tooltip: isItemSaved ? 'Remover dos favoritos' : 'Salvar',
+          ),
+        ],
       ),
-      body: Container(
-        color: Colors.grey[100],
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Card(
-            elevation: 3,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ListView(
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
+      body: ResponsiveBody(
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.coronavirus_outlined, size: 18, color: AppColors.primary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text.rich(
+                    TextSpan(
+                      style: Theme.of(context).textTheme.bodyMedium,
                       children: [
-                        const TextSpan(text: 'Microrganismo: '),
+                        const TextSpan(text: 'Microrganismo: ', style: TextStyle(fontWeight: FontWeight.w600)),
                         TextSpan(
                           text: widget.data['microrganismo'],
                           style: const TextStyle(fontStyle: FontStyle.italic),
@@ -682,36 +713,14 @@ class _PatologiaDetailPageState extends State<PatologiaDetailPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 18),
-                  Text('Primeira escolha:', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  ...primeira.entries.map((e) {
-                    if (e.key == 'nome') {
-                      return Row(
-                        children: [
-                          const Text('nome: '),
-                          _buildAntibioticoLink(context, e.value.toString()),
-                        ],
-                      );
-                    }
-                    return Text('${e.key}: ${e.value}');
-                  }),
-                  const SizedBox(height: 12),
-                  Text('Segunda escolha:', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  ...segunda.entries.map((e) {
-                    if (e.key == 'nome') {
-                      return Row(
-                        children: [
-                          const Text('nome: '),
-                          _buildAntibioticoLink(context, e.value.toString()),
-                        ],
-                      );
-                    }
-                    return Text('${e.key}: ${e.value}');
-                  }),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
+            const SizedBox(height: 16),
+            _buildEscolhaSection(context, '1ª ESCOLHA', primeira),
+            const SizedBox(height: 12),
+            _buildEscolhaSection(context, '2ª ESCOLHA', segunda),
+          ],
         ),
       ),
     );
@@ -768,6 +777,7 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
     final doencas = indicacoes.split(',').map((e) => e.trim()).toList();
     return Wrap(
       spacing: 8,
+      runSpacing: 4,
       children: doencas.map((doenca) {
         final existe = dadosPorPatologia.any((p) => p['doencaPatologia'] == doenca);
         if (existe && widget.onNavigateToPatologia != null) {
@@ -776,21 +786,35 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
             child: Text(
               doenca,
               style: const TextStyle(
-                color: Colors.blue,
+                color: AppColors.primary,
                 decoration: TextDecoration.underline,
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
               ),
             ),
           );
         }
-        return Text(
-          doenca,
-          style: const TextStyle(
-            fontSize: 15,
-          ),
-        );
+        return Text(doenca, style: Theme.of(context).textTheme.bodyMedium);
       }).toList(),
+    );
+  }
+
+  Widget _buildRow(BuildContext context, String label, Widget value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 110,
+            child: Text(
+              formatFieldLabel(label),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ),
+          Expanded(child: value),
+        ],
+      ),
     );
   }
 
@@ -798,70 +822,52 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: Text(widget.antibioticData['nomeAntibiotico']),
+        actions: [
+          IconButton(
+            icon: Icon(isItemSaved ? Icons.bookmark : Icons.bookmark_border),
+            onPressed: handleSave,
+            tooltip: isItemSaved ? 'Remover dos favoritos' : 'Salvar',
+          ),
+        ],
+      ),
+      body: ResponsiveBody(
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
           children: [
-            Expanded(
-              child: Text(
-                widget.antibioticData['nomeAntibiotico'],
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: widget.antibioticData.entries.where((e) => e.key != 'nomeAntibiotico').map((entry) {
+                    if (entry.key == 'indicacoesDoencas') {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'INDICAÇÕES / DOENÇAS',
+                              style: Theme.of(context).textTheme.labelSmall,
+                            ),
+                            const SizedBox(height: 6),
+                            _buildPatologiaLinks(context, entry.value.toString()),
+                            const SizedBox(height: 12),
+                          ],
+                        ),
+                      );
+                    }
+                    return _buildRow(
+                      context,
+                      entry.key,
+                      Text(entry.value.toString(), style: Theme.of(context).textTheme.bodyMedium),
+                    );
+                  }).toList(),
                 ),
               ),
             ),
-            IconButton(
-              icon: Icon(
-                isItemSaved ? Icons.bookmark : Icons.bookmark_border,
-                color: isItemSaved ? Colors.amber : Colors.grey,
-              ),
-              onPressed: handleSave,
-              tooltip: isItemSaved ? 'Remover dos favoritos' : 'Salvar',
-            ),
           ],
-        ),
-        backgroundColor: Colors.deepPurple,
-      ),
-      body: Container(
-        color: Colors.grey[100],
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Card(
-            elevation: 3,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ListView(
-                children: widget.antibioticData.entries.map((entry) {
-                  if (entry.key == 'indicacoesDoencas') {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Indicações/Doenças:',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        _buildPatologiaLinks(context, entry.value.toString()),
-                        const SizedBox(height: 12),
-                      ],
-                    );
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(
-                      '${entry.key}: ${entry.value}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
         ),
       ),
     );
@@ -898,53 +904,98 @@ class _SalvosPageState extends State<SalvosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Favoritos')),
-      body: localSalvos.isEmpty
-          ? const Center(child: Text('Nenhum item salvo.'))
+      body: ResponsiveBody(
+        child: localSalvos.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.bookmark_border, size: 40, color: AppColors.textSecondary.withValues(alpha: 0.6)),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Nenhum item salvo ainda',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                  ),
+                ],
+              ),
+            )
           : ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               itemCount: localSalvos.length,
               itemBuilder: (context, index) {
                 final item = localSalvos[index];
                 final tipo = item['tipo'];
-                return ListTile(
-                  title: Text(tipo == 'patologia' ? item['doencaPatologia'] : item['nomeAntibiotico']),
-                  subtitle: Text(tipo == 'patologia' ? 'Patologia' : 'Antibiótico'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => removeAndRefresh(item, tipo),
+                final isPatologia = tipo == 'patologia';
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                    leading: Icon(
+                      isPatologia ? Icons.coronavirus_outlined : Icons.medication_outlined,
+                      color: AppColors.primary,
+                    ),
+                    title: Text(
+                      isPatologia ? item['doencaPatologia'] : item['nomeAntibiotico'],
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 15),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.chipBackground,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          isPatologia ? 'PATOLOGIA' : 'ANTIBIÓTICO',
+                          style: const TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 10,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete_outline, color: AppColors.alert),
+                      tooltip: 'Remover dos favoritos',
+                      onPressed: () => removeAndRefresh(item, tipo),
+                    ),
+                    onTap: () {
+                      if (isPatologia) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PatologiaDetailPage(
+                              data: item,
+                              isSaved: true,
+                              onSave: () => removeAndRefresh(item, tipo),
+                              onNavigateToAntibiotico: (nomeAntibiotico) {},
+                            ),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AntibioticDetailPage(
+                              antibioticData: item,
+                              isSaved: true,
+                              onSave: () => removeAndRefresh(item, tipo),
+                              onNavigateToPatologia: (doenca) {},
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
-                  onTap: () {
-                    if (tipo == 'patologia') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PatologiaDetailPage(
-                            data: item,
-                            isSaved: true,
-                            onSave: () => removeAndRefresh(item, tipo),
-                            onNavigateToAntibiotico: (nomeAntibiotico) {},
-                          ),
-                        ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AntibioticDetailPage(
-                            antibioticData: item,
-                            isSaved: true,
-                            onSave: () => removeAndRefresh(item, tipo),
-                            onNavigateToPatologia: (doenca) {},
-                          ),
-                        ),
-                      );
-                    }
-                  },
                 );
               },
             ),
+      ),
     );
   }
 }
 
 List<Map<String, dynamic>> globalSalvos = [];
-

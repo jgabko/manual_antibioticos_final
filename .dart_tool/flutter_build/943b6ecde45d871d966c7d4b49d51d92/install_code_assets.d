@@ -1,0 +1,1 @@
+ /home/JGMK/Documents/manual_antibioticos_final/.dart_tool/flutter_build/943b6ecde45d871d966c7d4b49d51d92/native_assets.json: 
